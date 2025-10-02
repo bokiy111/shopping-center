@@ -1,0 +1,1 @@
+ALTER TABLE goods MODIFY seller_id bigint not null comment "卖家id";

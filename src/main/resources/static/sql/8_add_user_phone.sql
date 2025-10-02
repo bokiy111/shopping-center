@@ -1,0 +1,1 @@
+ALTER TABLE user ADD COLUMN phone varchar(20) not null comment "电话号码";

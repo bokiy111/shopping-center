@@ -1,0 +1,1 @@
+ALTER TABLE goods ADD COLUMN category INTEGER not null comment "商品类别";

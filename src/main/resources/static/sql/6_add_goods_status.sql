@@ -1,0 +1,1 @@
+ALTER TABLE goods ADD COLUMN status INT not null comment "商品状态";
