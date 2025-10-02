@@ -1,0 +1,1 @@
+ALTER TABLE goods MODIFY COLUMN cover_url VARCHAR(1500);

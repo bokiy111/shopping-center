@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nwpu.shopping.infrastructure.user.persistence.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.nwpu.shopping.infrastructure.user.persistence.pojo.UserPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="encrypted_password" jdbcType="VARCHAR" property="encryptedPassword"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+        <result column="qq" jdbcType="VARCHAR" property="qq"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+    </resultMap>
+
+    <select id="getUserAllInfoByAccount" parameterType="string" resultMap="BaseResultMap">
+        select * from user where account = #{account}
+    </select>
+
+    <insert id="register" parameterType="com.nwpu.shopping.infrastructure.user.persistence.pojo.UserPO">
+        insert into user(account, encrypted_password, nickname, avatar_url, role,phone, description)
+        values(#{account}, #{encryptedPassword}, #{nickname}, #{avatarUrl}, #{role},#{phone}, #{description})
+    </insert>
+
+    <select id="checkIfAccountExisted" parameterType="string" resultType="string">
+        SELECT EXISTS (
+            SELECT 1
+            FROM user
+            WHERE account = #{account}
+        );
+    </select>
+
+    <select id="findUserById" resultMap="BaseResultMap">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+
+    <!-- 更新用户联系方式 -->
+    <update id="updateContactInfo" parameterType="map">
+        UPDATE user SET contact = #{contactInfo} WHERE id = #{id}
+    </update>
+
+    <update id="updateUserInfo" >
+        UPDATE user SET nickname=#{nickname},
+                        avatar_url=#{avatarUrl},
+                        phone=#{phone},
+                        description=#{description},
+                        wechat=#{wechat},
+                        qq=#{qq},
+                        email=#{email}
+                        WHERE account=#{account}
+    </update>
+
+    <update id="updatePassword" parameterType="map">
+        UPDATE user SET encrypted_password = #{encryptedPassword} WHERE account = #{account}
+    </update>
+
+
+
+</mapper>

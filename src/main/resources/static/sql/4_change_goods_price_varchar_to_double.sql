@@ -1,0 +1,1 @@
+ALTER TABLE goods MODIFY price DOUBLE not null comment "商品价格";

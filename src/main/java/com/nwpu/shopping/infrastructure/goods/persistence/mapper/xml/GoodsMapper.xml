@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nwpu.shopping.infrastructure.goods.persistence.mapper.GoodsMapper">
+
+    <resultMap id="GoodsMap" type="com.nwpu.shopping.infrastructure.goods.persistence.pojo.GoodsPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="price" jdbcType="DOUBLE" property="price"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="seller_id" jdbcType="BIGINT" property="sellerId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="category" jdbcType="INTEGER" property="category"/>
+        <result column="cover_url" jdbcType="VARCHAR" property="coverUrl"/>
+
+    </resultMap>
+
+<!--    <select id="getUserAllInfoByAccount" parameterType="string" resultMap="BaseResultMap">-->
+<!--        select * from user where account = #{account}-->
+<!--    </select>-->
+
+<!--    <insert id="register" parameterType="com.nwpu.shopping.infrastructure.user.persistence.pojo.UserPO">-->
+<!--        insert into user(account, encrypted_password, nickname, avatar_url, role)-->
+<!--        values(#{account}, #{encryptedPassword}, #{nickname}, #{avatar_url}, #{role})-->
+<!--    </insert>-->
+
+    <insert id="addGoods" parameterType="com.nwpu.shopping.infrastructure.goods.persistence.pojo.GoodsPO">
+        insert into goods(name, description, price, seller_id, status,category,cover_url)
+        values(#{name}, #{description}, #{price}, #{sellerId}, 1,#{category},#{coverUrl})
+    </insert>
+
+
+    <delete id="deleteGoodsById" parameterType="long">
+        delete FROM goods where id=#{id}
+    </delete>
+
+    <update id="updateGoodsById" parameterType="com.nwpu.shopping.infrastructure.goods.persistence.pojo.GoodsPO">
+        update goods set name=#{name},description=#{description},price=#{price},seller_id=#{sellerId},update_time=now(),status=#{status},category=#{category} ,cover_url=#{coverUrl} where id=#{id}
+    </update>
+
+    <select id="getGoodsCountBySellerId" parameterType="long" resultType="int">
+        select count(*) from goods where seller_id=#{id}
+    </select>
+
+    <select id="findInfoById" parameterType="long" resultMap="GoodsMap">
+        select * from goods where id=#{id}
+    </select>
+
+    <select id="findPhoneById" parameterType="long" resultType="String">
+        select phone from user where id=#{id}
+    </select>
+
+    <update id="changeStatus" parameterType="long" >
+        UPDATE goods
+        SET status = CASE
+                         WHEN status = 1 THEN 0
+                         WHEN status = 0 THEN 1
+                         ELSE status
+            END
+        WHERE id=#{id};
+
+    </update>
+
+    <select id="getGoodsByPageAndSearch" resultMap="GoodsMap">
+        SELECT id,name,price,description,cover_url
+        FROM goods
+        <!-- 如果search不为空，添加模糊查询条件 -->
+        <where>
+        <if test="search!= null and search!= ''">
+            AND name LIKE '%${search}%' OR description LIKE '%${search}%'
+        </if>
+
+        <if test="category!=null and category!=0">
+            AND category=#{category}
+        </if>
+        </where>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="getSellerAllGoodsByPageAndSearch" resultMap="GoodsMap">
+        SELECT id, name, price, description,cover_url
+        FROM goods
+        <!-- 如果search不为空，添加模糊查询条件 -->
+        <where>
+            seller_Id=#{sellerId}
+            <if test="search!= null and search!= ''">
+                AND name LIKE '%${search}%' OR description LIKE '%${search}%'
+            </if>
+        </where>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+</mapper>

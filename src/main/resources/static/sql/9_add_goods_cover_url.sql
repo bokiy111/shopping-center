@@ -1,0 +1,1 @@
+ALTER TABLE goods ADD COLUMN cover_url Varchar(200) not null comment "商品图片";
